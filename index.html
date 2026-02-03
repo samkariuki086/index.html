@@ -4,30 +4,67 @@
   <meta charset="UTF-8">
   <title>Be My Valentine 💘</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+
+    /* Basic Styles */
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Pacifico', cursive;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      height: 100vh;
       text-align: center;
-      background-color: #ffe6ea;
-      padding-top: 50px;
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4, #fbc2eb);
+      background-size: 400% 400%;
+      animation: gradientShift 20s ease infinite;
+      color: white;
+    }
+
+    @keyframes gradientShift {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
     }
 
     h1 {
-      color: #d6336c;
+      font-size: 3em;
+      margin-top: 50px;
+      text-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+      opacity: 0;
+      animation: fadeIn 2s forwards;
+    }
+
+    @keyframes fadeIn {
+      to {opacity:1;}
     }
 
     img {
       width: 250px;
       margin: 20px 0;
+      transition: transform 0.5s ease;
+      animation: floatImage 2s infinite alternate;
+    }
+
+    @keyframes floatImage {
+      from {transform: translateY(0);}
+      to {transform: translateY(-15px);}
     }
 
     button {
-      padding: 15px 25px;
-      font-size: 18px;
-      margin: 10px;
+      padding: 20px 40px;
+      font-size: 1.5em;
+      margin: 20px;
       border: none;
-      border-radius: 10px;
+      border-radius: 50px;
       cursor: pointer;
+      box-shadow: 2px 2px 15px rgba(0,0,0,0.2);
       transition: all 0.3s ease;
+      position: relative;
+    }
+
+    button:hover {
+      transform: scale(1.1);
+      box-shadow: 4px 4px 20px rgba(0,0,0,0.3);
     }
 
     #yes {
@@ -36,8 +73,61 @@
     }
 
     #no {
-      background-color: #adb5bd;
+      background-color: #ffc0cb;
       color: white;
+    }
+
+    /* Floating hearts */
+    .heart {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: red;
+      transform: rotate(45deg);
+      animation: float 5s linear infinite;
+    }
+    .heart::before,
+    .heart::after {
+      content: "";
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: red;
+      border-radius: 50%;
+    }
+    .heart::before { top: -10px; left: 0; }
+    .heart::after { left: 10px; top: 0; }
+
+    @keyframes float {
+      0% {transform: translateY(0) rotate(45deg); opacity:1;}
+      100% {transform: translateY(-800px) rotate(45deg); opacity:0;}
+    }
+
+    /* Confetti hearts for celebration */
+    .confetti {
+      position: absolute;
+      width: 15px;
+      height: 15px;
+      background: red;
+      transform: rotate(45deg);
+      pointer-events: none;
+      animation: confettiFall 3s forwards;
+    }
+    .confetti::before,
+    .confetti::after {
+      content:"";
+      position: absolute;
+      width: 15px;
+      height: 15px;
+      background: red;
+      border-radius: 50%;
+    }
+    .confetti::before { top: -7.5px; left: 0; }
+    .confetti::after { left: 7.5px; top: 0; }
+
+    @keyframes confettiFall {
+      0% {opacity:1; transform: translateY(0) rotate(45deg);}
+      100% {opacity:0; transform: translateY(600px) rotate(360deg);}
     }
   </style>
 </head>
@@ -45,7 +135,7 @@
 
   <h1 id="question">Will you be my Valentine? 💘</h1>
 
- <img id="image" src="MINION.jpg">
+  <img id="image" src="MINION.jpg">
 
   <br>
 
@@ -54,31 +144,42 @@
 
   <script>
     let noCount = 0;
-
     const messages = [
       "Are you sure? 🥺",
       "Really really sure? 😢",
       "Please think again 💔",
-      "I’ll buy you snacks 😭🍫",
+      "I’ll do anything 😭",
       "This is breaking my heart 💘",
-      "Okay last chance 😔"
+      "Last chance 😔"
     ];
+
+    // Random floating hearts in background
+    function spawnHearts() {
+      const heart = document.createElement("div");
+      heart.className = "heart";
+      heart.style.left = Math.random()*window.innerWidth + "px";
+      heart.style.width = heart.style.height = (10+Math.random()*30) + "px";
+      heart.style.animationDuration = (5+Math.random()*5)+"s";
+      document.body.appendChild(heart);
+      setTimeout(()=>heart.remove(), 8000);
+    }
+    setInterval(spawnHearts, 400);
 
     function noClick() {
       noCount++;
+      const q = document.getElementById("question");
+      q.innerText = messages[Math.min(noCount-1, messages.length-1)];
 
-      document.getElementById("question").innerText =
-        messages[Math.min(noCount - 1, messages.length - 1)];
-
-      // Make YES button bigger each time
+      // Make YES bigger
       let yesBtn = document.getElementById("yes");
-      let currentSize = 18 + noCount * 5;
-      yesBtn.style.fontSize = currentSize + "px";
-      yesBtn.style.padding = "20px 35px";
+      yesBtn.style.fontSize = 1.5 + noCount*0.2 + "em";
+      yesBtn.style.padding = 20 + noCount*5 + "px 40px";
 
-      // Optional: move NO button slightly
-      document.getElementById("no").style.marginLeft =
-        Math.floor(Math.random() * 100) + "px";
+      // Move NO button randomly
+      const noBtn = document.getElementById("no");
+      noBtn.style.position = "relative";
+      noBtn.style.left = Math.floor(Math.random() * 100 - 50) + "px";
+      noBtn.style.top = Math.floor(Math.random() * 50 - 25) + "px";
     }
 
     function yesClick() {
@@ -86,12 +187,21 @@
         <h1>YAYYYY!!! 🥳💖</h1>
         <p>I knew you’d say yes 😘</p>
         <img src="MINHAPPY.jpg" width="300">
-        <p>Happy Valentine’s 💕</p>
       `;
+
+      // Celebration confetti hearts
+      for(let i=0;i<50;i++){
+        const confetti = document.createElement("div");
+        confetti.className = "confetti";
+        confetti.style.left = Math.random()*window.innerWidth + "px";
+        confetti.style.animationDuration = (2+Math.random()*2) + "s";
+        confetti.style.width = confetti.style.height = (10+Math.random()*20)+"px";
+        document.body.appendChild(confetti);
+        setTimeout(()=>confetti.remove(), 3000);
+      }
     }
   </script>
 
 </body>
-
 </html>
 
