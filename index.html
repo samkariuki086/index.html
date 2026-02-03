@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Be My Valentine 💘</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #ffe6ea;
+      padding-top: 50px;
+    }
+
+    h1 {
+      color: #d6336c;
+    }
+
+    img {
+      width: 250px;
+      margin: 20px 0;
+    }
+
+    button {
+      padding: 15px 25px;
+      font-size: 18px;
+      margin: 10px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    #yes {
+      background-color: #ff4d6d;
+      color: white;
+    }
+
+    #no {
+      background-color: #adb5bd;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <h1 id="question">Will you be my Valentine? 💘</h1>
+
+ <img id="image" src="https://media.tenor.com/0AVb6xk0G2QAAAAC/please-beg.gif" alt="Begging cartoon">
+
+  <br>
+
+  <button id="yes" onclick="yesClick()">YES 💖</button>
+  <button id="no" onclick="noClick()">NO 😭</button>
+
+  <script>
+    let noCount = 0;
+
+    const messages = [
+      "Are you sure? 🥺",
+      "Really really sure? 😢",
+      "Please think again 💔",
+      "I’ll buy you snacks 😭🍫",
+      "This is breaking my heart 💘",
+      "Okay last chance 😔"
+    ];
+
+    function noClick() {
+      noCount++;
+
+      document.getElementById("question").innerText =
+        messages[Math.min(noCount - 1, messages.length - 1)];
+
+      // Make YES button bigger each time
+      let yesBtn = document.getElementById("yes");
+      let currentSize = 18 + noCount * 5;
+      yesBtn.style.fontSize = currentSize + "px";
+      yesBtn.style.padding = "20px 35px";
+
+      // Optional: move NO button slightly
+      document.getElementById("no").style.marginLeft =
+        Math.floor(Math.random() * 100) + "px";
+    }
+
+    function yesClick() {
+      document.body.innerHTML = `
+        <h1>YAYYYY!!! 🥳💖</h1>
+        <p>I knew you’d say yes 😘</p>
+        <img src="https://i.imgur.com/9YjG6qZ.png" width="300">
+        <p>Happy Valentine’s 💕</p>
+      `;
+    }
+  </script>
+
+</body>
+</html>
