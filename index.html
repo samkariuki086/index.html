@@ -2,21 +2,26 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Be My Valentine 💘</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
 
-    /* Basic Styles */
+    /* Body & background */
     body {
       font-family: 'Pacifico', cursive;
       margin: 0;
       padding: 0;
       overflow: hidden;
-      height: 100vh;
-      text-align: center;
-      background: linear-gradient(135deg, #ff9a9e, #fad0c4, #fbc2eb);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4, #fbc2eb, #a18cd1);
       background-size: 400% 400%;
       animation: gradientShift 20s ease infinite;
+      text-align: center;
       color: white;
     }
 
@@ -26,56 +31,52 @@
       100% {background-position: 0% 50%;}
     }
 
+    /* Main Question */
     h1 {
-      font-size: 3em;
-      margin-top: 50px;
+      font-size: clamp(1.8rem, 6vw, 3rem);
+      margin: 20px 0;
       text-shadow: 2px 2px 10px rgba(0,0,0,0.2);
       opacity: 0;
       animation: fadeIn 2s forwards;
     }
+    @keyframes fadeIn { to {opacity:1;} }
 
-    @keyframes fadeIn {
-      to {opacity:1;}
-    }
-
+    /* Image */
     img {
+      max-width: 70vw;
       width: 250px;
       margin: 20px 0;
       transition: transform 0.5s ease;
       animation: floatImage 2s infinite alternate;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     }
+    @keyframes floatImage { from {transform: translateY(0);} to {transform: translateY(-15px);} }
 
-    @keyframes floatImage {
-      from {transform: translateY(0);}
-      to {transform: translateY(-15px);}
+    /* Buttons */
+    .button-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 20px;
     }
 
     button {
-      padding: 20px 40px;
-      font-size: 1.5em;
-      margin: 20px;
+      padding: 15px 35px;
+      font-size: clamp(1rem, 5vw, 1.5rem);
       border: none;
       border-radius: 50px;
       cursor: pointer;
       box-shadow: 2px 2px 15px rgba(0,0,0,0.2);
       transition: all 0.3s ease;
       position: relative;
+      min-width: 120px;
     }
+    button:hover { transform: scale(1.1); box-shadow: 4px 4px 20px rgba(0,0,0,0.3); }
 
-    button:hover {
-      transform: scale(1.1);
-      box-shadow: 4px 4px 20px rgba(0,0,0,0.3);
-    }
-
-    #yes {
-      background-color: #ff4d6d;
-      color: white;
-    }
-
-    #no {
-      background-color: #ffc0cb;
-      color: white;
-    }
+    #yes { background-color: #ff4d6d; color: white; }
+    #no { background-color: #ffc0cb; color: white; }
 
     /* Floating hearts */
     .heart {
@@ -85,6 +86,7 @@
       background: red;
       transform: rotate(45deg);
       animation: float 5s linear infinite;
+      z-index: 1;
     }
     .heart::before,
     .heart::after {
@@ -99,11 +101,11 @@
     .heart::after { left: 10px; top: 0; }
 
     @keyframes float {
-      0% {transform: translateY(0) rotate(45deg); opacity:1;}
-      100% {transform: translateY(-800px) rotate(45deg); opacity:0;}
+      0% { transform: translateY(0) rotate(45deg); opacity:1; }
+      100% { transform: translateY(-800px) rotate(45deg); opacity:0; }
     }
 
-    /* Confetti hearts for celebration */
+    /* Confetti hearts */
     .confetti {
       position: absolute;
       width: 15px;
@@ -112,6 +114,7 @@
       transform: rotate(45deg);
       pointer-events: none;
       animation: confettiFall 3s forwards;
+      z-index: 2;
     }
     .confetti::before,
     .confetti::after {
@@ -135,12 +138,12 @@
 
   <h1 id="question">Will you be my Valentine? 💘</h1>
 
-  <img id="image" src="MINION.jpg">
+  <img id="image" src="MINION.jpg" alt="Begging cartoon">
 
-  <br>
-
-  <button id="yes" onclick="yesClick()">YES 💖</button>
-  <button id="no" onclick="noClick()">NO 😭</button>
+  <div class="button-container">
+    <button id="yes" onclick="yesClick()">YES 💖</button>
+    <button id="no" onclick="noClick()">NO 😭</button>
+  </div>
 
   <script>
     let noCount = 0;
@@ -153,7 +156,7 @@
       "Last chance 😔"
     ];
 
-    // Random floating hearts in background
+    // Floating hearts background
     function spawnHearts() {
       const heart = document.createElement("div");
       heart.className = "heart";
@@ -167,8 +170,8 @@
 
     function noClick() {
       noCount++;
-      const q = document.getElementById("question");
-      q.innerText = messages[Math.min(noCount-1, messages.length-1)];
+      document.getElementById("question").innerText =
+        messages[Math.min(noCount-1, messages.length-1)];
 
       // Make YES bigger
       let yesBtn = document.getElementById("yes");
@@ -186,10 +189,10 @@
       document.body.innerHTML = `
         <h1>YAYYYY!!! 🥳💖</h1>
         <p>I knew you’d say yes 😘</p>
-        <img src="MINHAPPY.jpg" width="300">
+        <img src="MINHAPPY" style="max-width:70vw; width:300px; border-radius:15px; box-shadow:0 10px 30px rgba(0,0,0,0.2)">
       `;
 
-      // Celebration confetti hearts
+      // Celebration confetti
       for(let i=0;i<50;i++){
         const confetti = document.createElement("div");
         confetti.className = "confetti";
@@ -204,4 +207,5 @@
 
 </body>
 </html>
+
 
